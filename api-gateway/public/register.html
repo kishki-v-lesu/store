@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация - E-Commerce</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 420px;
+        }
+        h1 { color: #333; margin-bottom: 8px; font-size: 28px; }
+        .subtitle { color: #666; margin-bottom: 30px; font-size: 14px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; color: #333; margin-bottom: 8px; font-weight: 500; font-size: 14px; }
+        .input-wrapper {
+            position: relative;
+        }
+        input {
+            width: 100%;
+            padding: 14px 50px 14px 16px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus { outline: none; border-color: #667eea; }
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            opacity: 0.6;
+        }
+        .toggle-password:hover { opacity: 1; }
+        button[type="submit"] {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button[type="submit"]:hover { transform: translateY(-2px); }
+        button[type="submit"]:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+        .message {
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+        .message.success { background: #d4edda; color: #155724; display: block; }
+        .message.error { background: #f8d7da; color: #721c24; display: block; }
+        .message.loading { background: #cce5ff; color: #004085; display: block; }
+        .links { margin-top: 20px; text-align: center; font-size: 14px; }
+        .links a { color: #667eea; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Создать аккаунт</h1>
+        <p class="subtitle">Заполните форму для регистрации</p>
+        
+        <form id="registerForm">
+            <div class="form-group">
+                <label>Имя пользователя</label>
+                <input type="text" name="username" placeholder="ivanov" required minlength="3" maxlength="50">
+            </div>
+            
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="ivanov@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Пароль</label>
+                <div class="input-wrapper">
+                    <input type="password" name="password" id="password" placeholder="Минимум 8 символов" required minlength="8">
+                    <button type="button" class="toggle-password" onclick="togglePassword('password', this)">👁</button>
+                </div>
+            </div>
+            
+            <button type="submit" id="submitBtn">Зарегистрироваться</button>
+        </form>
+        
+        <div id="message" class="message"></div>
+        
+        <div class="links">
+            <a href="/login.html">Уже есть аккаунт? Войти</a>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁';
+            }
+        }
+
+        const form = document.getElementById('registerForm');
+        const message = document.getElementById('message');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            message.className = 'message loading';
+            message.textContent = 'Регистрация...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/v1/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert('Регистрация успешна! Теперь войдите в аккаунт.');
+                    window.location.href = '/login.html';
+                } else {
+                    const errors = result.detail?.map(e => `${e.loc.join('.')}: ${e.msg}`).join('<br>') 
+                                || result.detail 
+                                || 'Ошибка регистрации';
+                    message.className = 'message error';
+                    message.innerHTML = errors;
+                }
+            } catch (error) {
+                message.className = 'message error';
+                message.textContent = 'Ошибка соединения с сервером. Проверьте, запущен ли проект.';
+            }
+
+            submitBtn.disabled = false;
+        });
+    </script>
+</body>
+</html>

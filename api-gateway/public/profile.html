@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль - E-Commerce</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo { font-size: 24px; font-weight: bold; cursor: pointer; }
+        .user-info { display: flex; align-items: center; gap: 20px; }
+        .user-name { font-size: 16px; }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-logout {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .btn-logout:hover { background: rgba(255,255,255,0.3); }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        h1 { color: #333; margin-bottom: 30px; }
+        .profile-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #eee;
+        }
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+        }
+        .profile-title h2 { color: #333; margin-bottom: 8px; }
+        .profile-title p { color: #666; }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .info-item {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        .info-label { font-size: 12px; color: #666; text-transform: uppercase; margin-bottom: 8px; }
+        .info-value { font-size: 18px; color: #333; font-weight: 500; }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .address-card, .card-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .address-header, .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .address-text { color: #333; line-height: 1.6; }
+        .card-number { font-family: monospace; font-size: 18px; color: #333; }
+        .card-brand { font-size: 14px; color: #666; margin-top: 4px; }
+        .btn-small {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .btn-small:hover { background: #5a6fd6; }
+        .btn-small.danger { background: #dc3545; }
+        .btn-small.danger:hover { background: #c82333; }
+        .btn-small.success { background: #28a745; }
+        .btn-small.success:hover { background: #218838; }
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        .add-form {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+            border: 2px solid #e1e1e1;
+        }
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #333;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .card-icons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .card-icon {
+            padding: 4px 8px;
+            background: #eee;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            transition: background 0.2s;
+        }
+        .nav-links a:hover { background: rgba(255,255,255,0.2); }
+        .nav-links a.active { background: rgba(255,255,255,0.3); }
+        .message {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+        .message.success { background: #d4edda; color: #155724; display: block; }
+        .message.error { background: #f8d7da; color: #721c24; display: block; }
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .tab {
+            padding: 12px 24px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo" onclick="window.location.href='/index.html'">E-Commerce</div>
+        <nav class="nav-links">
+            <a href="/index.html">Главная</a>
+            <a href="/products.html">Товары</a>
+            <a href="/orders.html">Заказы</a>
+            <a href="/profile.html" class="active">Профиль</a>
+        </nav>
+        <div class="user-info">
+            <span class="user-name" id="userName">Гость</span>
+            <a href="#" class="btn btn-logout" id="logoutBtn">Выйти</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Личный кабинет</h1>
+        
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="avatar" id="avatar">?</div>
+                <div class="profile-title">
+                    <h2 id="displayName">Загрузка...</h2>
+                    <p id="displayEmail">...</p>
+                </div>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Имя пользователя</div>
+                    <div class="info-value" id="username">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Email</div>
+                    <div class="info-value" id="email">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">ID пользователя</div>
+                    <div class="info-value" id="userId">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-card">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('address')">Адреса доставки</button>
+                <button class="tab" onclick="showTab('cards')">Привязанные карты</button>
+            </div>
+
+            <div id="tab-address" class="tab-content active">
+                <h3 class="section-title">Мои адреса</h3>
+                <div id="addresses">
+                    <div class="empty-state">У вас пока нет сохранённых адресов</div>
+                </div>
+                
+                <h4 style="margin: 20px 0 12px; color: #333;">Добавить новый адрес</h4>
+                <div class="add-form">
+                    <form id="addressForm">
+                        <div class="form-group">
+                            <label>Название (для себя)</label>
+                            <input type="text" name="label" placeholder="Например: Дом, Работа">
+                        </div>
+                        <div class="form-group">
+                            <label>Город</label>
+                            <input type="text" name="city" placeholder="Москва" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Улица</label>
+                                <input type="text" name="street" placeholder="ул. Пушкина" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Дом</label>
+                                <input type="text" name="building" placeholder="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Квартира</label>
+                                <input type="text" name="apartment" placeholder="42">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Индекс</label>
+                            <input type="text" name="postal_code" placeholder="123456">
+                        </div>
+                        <div class="form-group">
+                            <label>Телефон для связи</label>
+                            <input type="tel" name="phone" placeholder="+7 (999) 123-45-67">
+                        </div>
+                        <button type="submit" class="btn-small success">Сохранить адрес</button>
+                    </form>
+                    <div id="addressMessage" class="message"></div>
+                </div>
+            </div>
+
+            <div id="tab-cards" class="tab-content">
+                <h3 class="section-title">Платёжные карты</h3>
+                <div id="cards">
+                    <div class="empty-state">У вас пока нет привязанных карт</div>
+                </div>
+                
+                <h4 style="margin: 20px 0 12px; color: #333;">Добавить карту</h4>
+                <div class="add-form">
+                    <form id="cardForm">
+                        <div class="form-group">
+                            <label>Номер карты</label>
+                            <input type="text" name="card_number" placeholder="4242 4242 4242 4242" maxlength="19" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Срок действия</label>
+                                <input type="text" name="expiry" placeholder="MM/YY" maxlength="5" required>
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="password" name="cvv" placeholder="123" maxlength="4" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Имя владельца</label>
+                            <input type="text" name="holder_name" placeholder="IVAN PETROV" required>
+                        </div>
+                        <div class="card-icons">
+                            <span class="card-icon">💳 Visa</span>
+                            <span class="card-icon">💳 Mastercard</span>
+                        </div>
+                        <button type="submit" class="btn-small success">Привязать карту</button>
+                    </form>
+                    <div id="cardMessage" class="message"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let addresses = [];
+        let cards = [];
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab[onclick="showTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        function renderAddresses() {
+            const container = document.getElementById('addresses');
+            if (!addresses.length) {
+                container.innerHTML = '<div class="empty-state">У вас пока нет сохранённых адресов</div>';
+                return;
+            }
+            container.innerHTML = addresses.map((addr, i) => `
+                <div class="address-card">
+                    <div class="address-header">
+                        <strong>${addr.label || 'Адрес ' + (i+1)}</strong>
+                        <button class="btn-small danger" onclick="deleteAddress(${i})">Удалить</button>
+                    </div>
+                    <div class="address-text">
+                        ${addr.city || ''}, ${addr.street || ''}, ${addr.building || ''}${addr.apartment ? ', кв. ' + addr.apartment : ''}<br>
+                        ${addr.postal_code ? 'Индекс: ' + addr.postal_code : ''}
+                        ${addr.phone ? '<br>Тел: ' + addr.phone : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCards() {
+            const container = document.getElementById('cards');
+            if (!cards.length) {
+                container.innerHTML = '<div class="empty-state">У вас пока нет привязанных карт</div>';
+                return;
+            }
+            container.innerHTML = cards.map((card, i) => `
+                <div class="card-item">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-number">•••• •••• •••• ${card.last4}</div>
+                            <div class="card-brand">${card.brand || 'Карта'} ••• ${card.holder_name}</div>
+                        </div>
+                        <button class="btn-small danger" onclick="deleteCard(${i})">Удалить</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteAddress(index) {
+            addresses.splice(index, 1);
+            localStorage.setItem('addresses', JSON.stringify(addresses));
+            renderAddresses();
+        }
+
+        function deleteCard(index) {
+            cards.splice(index, 1);
+            localStorage.setItem('cards', JSON.stringify(cards));
+            renderCards();
+        }
+
+        async function loadProfile() {
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/auth/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error('Unauthorized');
+                
+                currentUser = await response.json();
+                
+                document.getElementById('userName').textContent = currentUser.username;
+                document.getElementById('displayName').textContent = currentUser.username;
+                document.getElementById('displayEmail').textContent = currentUser.email;
+                document.getElementById('avatar').textContent = currentUser.username.charAt(0).toUpperCase();
+                document.getElementById('username').textContent = currentUser.username;
+                document.getElementById('email').textContent = currentUser.email;
+                document.getElementById('userId').textContent = '#' + currentUser.id.toString(16);
+
+                addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
+                cards = JSON.parse(localStorage.getItem('cards') || '[]');
+                renderAddresses();
+                renderCards();
+                
+            } catch (e) {
+                localStorage.removeItem('access_token');
+                window.location.href = '/login.html';
+            }
+        }
+
+        document.getElementById('addressForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const newAddress = {
+                label: formData.get('label'),
+                city: formData.get('city'),
+                street: formData.get('street'),
+                building: formData.get('building'),
+                apartment: formData.get('apartment'),
+                postal_code: formData.get('postal_code'),
+                phone: formData.get('phone')
+            };
+            addresses.push(newAddress);
+            localStorage.setItem('addresses', JSON.stringify(addresses));
+            renderAddresses();
+            e.target.reset();
+            document.getElementById('addressMessage').className = 'message success';
+            document.getElementById('addressMessage').textContent = 'Адрес сохранён!';
+            setTimeout(() => document.getElementById('addressMessage').className = 'message', 3000);
+        });
+
+        document.getElementById('cardForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const number = formData.get('card_number').replace(/\s/g, '');
+            const brand = number.startsWith('4') ? 'Visa' : number.startsWith('5') ? 'Mastercard' : 'Карта';
+            const newCard = {
+                last4: number.slice(-4),
+                brand: brand,
+                holder_name: formData.get('holder_name')
+            };
+            cards.push(newCard);
+            localStorage.setItem('cards', JSON.stringify(cards));
+            renderCards();
+            e.target.reset();
+            document.getElementById('cardMessage').className = 'message success';
+            document.getElementById('cardMessage').textContent = 'Карта привязана!';
+            setTimeout(() => document.getElementById('cardMessage').className = 'message', 3000);
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('access_token');
+            window.location.href = '/login.html';
+        });
+
+        loadProfile();
+    </script>
+</body>
+</html>
