@@ -222,10 +222,11 @@
         <nav class="nav-links">
             <a href="/index.html">Главная</a>
             <a href="/products.html">Товары</a>
+            <a href="/add-product.html">Добавить товар</a>
             <a href="/orders.html">Заказы</a>
             <a href="/profile.html" class="active">Профиль</a>
         </nav>
-        <div class="user-info">
+        <div class="user-info" id="userInfo" style="visibility:hidden">
             <span class="user-name" id="userName">Гость</span>
             <a href="#" class="btn btn-logout" id="logoutBtn">Выйти</a>
         </div>
@@ -443,7 +444,8 @@
                 renderCards();
                 
             } catch (e) {
-                localStorage.removeItem('access_token');
+                document.getElementById('userInfo').style.visibility = 'visible';
+                    localStorage.removeItem('access_token');
                 window.location.href = '/login.html';
             }
         }
@@ -490,7 +492,8 @@
 
         document.getElementById('logoutBtn').addEventListener('click', (e) => {
             e.preventDefault();
-            localStorage.removeItem('access_token');
+            document.getElementById('userInfo').style.visibility = 'visible';
+                    localStorage.removeItem('access_token');
             window.location.href = '/login.html';
         });
 

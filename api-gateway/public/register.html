@@ -149,8 +149,20 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    alert('Регистрация успешна! Теперь войдите в аккаунт.');
-                    window.location.href = '/login.html';
+                    const loginResponse = await fetch('/api/v1/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: data.username, password: data.password })
+                    });
+                    
+                    if (loginResponse.ok) {
+                        const loginResult = await loginResponse.json();
+                        localStorage.setItem('access_token', loginResult.access_token);
+                        window.location.href = '/index.html';
+                    } else {
+                        alert('Регистрация успешна! Войдите в аккаунт.');
+                        window.location.href = '/login.html';
+                    }
                 } else {
                     const errors = result.detail?.map(e => `${e.loc.join('.')}: ${e.msg}`).join('<br>') 
                                 || result.detail 

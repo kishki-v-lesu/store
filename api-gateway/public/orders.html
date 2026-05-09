@@ -121,10 +121,11 @@
         <nav class="nav-links">
             <a href="/index.html">Главная</a>
             <a href="/products.html">Товары</a>
+            <a href="/add-product.html">Добавить товар</a>
             <a href="/orders.html" class="active">Заказы</a>
             <a href="/profile.html">Профиль</a>
         </nav>
-        <div class="user-info">
+        <div class="user-info" id="userInfo" style="visibility:hidden">
             <span class="user-name" id="userName">Гость</span>
             <a href="#" class="btn btn-logout" id="logoutBtn">Выйти</a>
         </div>
@@ -163,6 +164,7 @@
                         headers: { 'Authorization': `Bearer ${token}` }
                     }).then(r => r.json());
                     document.getElementById('userName').textContent = user.username;
+                    document.getElementById('userInfo').style.visibility = 'visible';
                 }
 
                 if (response.status === 200) {
@@ -242,7 +244,8 @@
 
         document.getElementById('logoutBtn').addEventListener('click', (e) => {
             e.preventDefault();
-            localStorage.removeItem('access_token');
+            document.getElementById('userInfo').style.visibility = 'visible';
+                    localStorage.removeItem('access_token');
             window.location.href = '/login.html';
         });
 
