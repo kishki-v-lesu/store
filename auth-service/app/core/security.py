@@ -10,20 +10,11 @@ from app.core.config import settings
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated=[])
 
 
-def _truncate_password(password: str) -> str:
-    encoded = password.encode('utf-8')
-    if len(encoded) > 72:
-        return encoded[:72].decode('utf-8', errors='ignore')
-    return password
-
-
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    plain_password = _truncate_password(plain_password)
     return pwd_context.verify(plain_password, hashed_password)
 
 
 def get_password_hash(password: str) -> str:
-    password = _truncate_password(password)
     return pwd_context.hash(password)
 
 
